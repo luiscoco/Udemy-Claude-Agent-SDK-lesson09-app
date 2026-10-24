@@ -1,0 +1,275 @@
+{
+  "lanes": [
+    "Student UI",
+    "Node host",
+    "SDK + Claude",
+    "Tool execution",
+    "Private project"
+  ],
+  "arrows": [
+    [
+      0,
+      1,
+      "1. Validate bounded configuration"
+    ],
+    [
+      1,
+      4,
+      "2. Reset the classroom project"
+    ],
+    [
+      1,
+      2,
+      "3. Choose available and pre-approved tools"
+    ],
+    [
+      1,
+      2,
+      "4. Apply the explicit Edit block"
+    ],
+    [
+      2,
+      4,
+      "5. Select filesystem settings"
+    ],
+    [
+      1,
+      2,
+      "6. Preserve the process environment"
+    ],
+    [
+      1,
+      2,
+      "7. Call query with the composed options"
+    ],
+    [
+      2,
+      1,
+      "8. Inspect actual init availability"
+    ],
+    [
+      2,
+      1,
+      "9. Guard each classroom path"
+    ],
+    [
+      1,
+      2,
+      "10. Resolve the unlisted Edit approval"
+    ],
+    [
+      2,
+      1,
+      "11. Preserve the typed SDK outcome"
+    ],
+    [
+      1,
+      4,
+      "12. Read the actual file after completion"
+    ],
+    [
+      1,
+      0,
+      "13. Render the observed explanation"
+    ]
+  ],
+  "steps": [
+    {
+      "number": 1,
+      "title": "Validate bounded configuration",
+      "source": "src/server.ts",
+      "code": "const config = validateConfig(input);",
+      "language": "typescript",
+      "explanation": "The host accepts fixed scenarios, a bounded turn count, an SDK budget threshold and supported effort values. It never accepts an arbitrary cwd or tool callback from the browser.",
+      "firstLine": 58,
+      "lastLine": 58,
+      "anchors": [
+        "const config = validateConfig(input);"
+      ],
+      "sourceSHA256": "eceef9458867e612649c0a027e0c170cd5c24b81cb53cff30a21f58e54d98e92",
+      "narration": "Step one. The host accepts fixed scenarios, a bounded turn count, an SDK budget threshold and supported effort values. It never accepts an arbitrary cwd or tool callback from the browser. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 2,
+      "title": "Reset the classroom project",
+      "source": "src/agent.ts",
+      "code": "for (const name of [\n  \"notes.md\", \"status.txt\", \".claude/settings.json\"\n]) await writeFile(\n  resolve(cwd, name),\n  await readFile(resolve(ROOT, \"fixtures/project\", name))\n);",
+      "language": "typescript",
+      "explanation": "Each experiment starts from trusted fixture bytes in its own private directory. Resetting a scenario does not touch your other repositories.",
+      "firstLine": 26,
+      "lastLine": 26,
+      "anchors": [
+        "for (const name of [\"notes.md\", \"status.txt\", \".claude/settings.json\"]) await writeFile(resolve(cwd, name), await readFile(resolve(ROOT, \"fixtures/project\", name)));"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step two. Each experiment starts from trusted fixture bytes in its own private directory. Resetting a scenario does not touch your other repositories. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 3,
+      "title": "Choose available and pre-approved tools",
+      "source": "src/agent.ts",
+      "code": "// Selected option properties.\ntools: readOnly\n  ? [\"Read\", \"Glob\", \"Grep\"] : [\"Read\", \"Edit\"],\nallowedTools: readOnly\n  ? [\"Read\", \"Glob\", \"Grep\"] : [\"Read\"],",
+      "language": "typescript",
+      "explanation": "tools defines availability. allowedTools is a separate pre-approval list. In the approval experiment Edit remains available even though only Read is pre-approved.",
+      "firstLine": 50,
+      "lastLine": 51,
+      "anchors": [
+        "tools: readOnly ? [\"Read\", \"Glob\", \"Grep\"] : [\"Read\", \"Edit\"],",
+        "allowedTools: readOnly ? [\"Read\", \"Glob\", \"Grep\"] : [\"Read\"],"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step three. tools defines availability. allowedTools is a separate pre-approval list. In the approval experiment Edit remains available even though only Read is pre-approved. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 4,
+      "title": "Apply the explicit Edit block",
+      "source": "src/agent.ts",
+      "code": "// Selected tail of disallowedTools.\n...(config.scenario === \"blocked\" || readOnly\n  ? [\"Edit\"] : [])",
+      "language": "typescript",
+      "explanation": "The blocked and read-only experiments add Edit to disallowedTools. The rest of the array also excludes shell, write and web tools. A bare tool-name block removes Edit from model availability.",
+      "firstLine": 52,
+      "lastLine": 52,
+      "anchors": [
+        "...(config.scenario === \"blocked\" || readOnly ? [\"Edit\"] : [])"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step four. The blocked and read-only experiments add Edit to disallowedTools. The rest of the array also excludes shell, write and web tools. A bare tool-name block removes Edit from model availability. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 5,
+      "title": "Select filesystem settings",
+      "source": "src/agent.ts",
+      "code": "settingSources: config.scenario === \"blocked\"\n  ? [\"project\"] : [],",
+      "language": "typescript",
+      "explanation": "Only the blocked experiment loads the project settings source. Its settings file allows Edit, while the programmatic deny removes it. Other experiments isolate filesystem settings with an explicit empty array.",
+      "firstLine": 55,
+      "lastLine": 55,
+      "anchors": [
+        "settingSources: config.scenario === \"blocked\" ? [\"project\"] : [],"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step five. Only the blocked experiment loads the project settings source. Its settings file allows Edit, while the programmatic deny removes it. Other experiments isolate filesystem settings with an explicit empty array. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 6,
+      "title": "Preserve the process environment",
+      "source": "src/agent.ts",
+      "code": "env: {\n  ...process.env,\n  CLAUDE_CONFIG_DIR: resolve(ROOT, \".runtime/sdk-home\"),\n  LESSON09_CONTEXT: \"classroom-options\"\n},",
+      "language": "typescript",
+      "explanation": "The TypeScript env option replaces the subprocess environment, so the host spreads inherited values before adding its own configuration. The UI projects only the harmless classroom value and never dumps keys.",
+      "firstLine": 57,
+      "lastLine": 57,
+      "anchors": [
+        "env: { ...process.env, CLAUDE_CONFIG_DIR: resolve(ROOT, \".runtime/sdk-home\"), LESSON09_CONTEXT: \"classroom-options\" },"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step six. The TypeScript env option replaces the subprocess environment, so the host spreads inherited values before adding its own configuration. The UI projects only the harmless classroom value and never dumps keys. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 7,
+      "title": "Call query with the composed options",
+      "source": "src/agent.ts",
+      "code": "const run = query({\n  prompt: PROMPTS[config.scenario], options\n});",
+      "language": "typescript",
+      "explanation": "The fixed prompt and composed object start one real SDK query. The SDK handles model and tool orchestration; the host observes the resulting stream.",
+      "firstLine": 81,
+      "lastLine": 81,
+      "anchors": [
+        "const run = query({ prompt: PROMPTS[config.scenario], options });"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step seven. The fixed prompt and composed object start one real SDK query. The SDK handles model and tool orchestration; the host observes the resulting stream. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 8,
+      "title": "Inspect actual init availability",
+      "source": "src/agent.ts",
+      "code": "if (message.type === \"system\"\n    && message.subtype === \"init\") {\n  emit({ type: \"initialized\",\n    model: message.model, tools: message.tools,\n    permissionMode: message.permissionMode\n  });\n}",
+      "language": "typescript",
+      "explanation": "The host narrows system/init and records the model, actual tool list and permission mode. The student checks this observation against the requested option configuration.",
+      "firstLine": 85,
+      "lastLine": 85,
+      "anchors": [
+        "if (message.type === \"system\" && message.subtype === \"init\") emit({ type: \"initialized\", model: message.model, tools: message.tools, permissionMode: message.permissionMode });"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step eight. The host narrows system/init and records the model, actual tool list and permission mode. The student checks this observation against the requested option configuration. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 9,
+      "title": "Guard each classroom path",
+      "source": "src/agent.ts",
+      "code": "if (pathAllowed(\n  cwd, input.tool_name,\n  input.tool_input as Record<string, unknown>\n)) return {};\n// Otherwise return a deny hook decision.",
+      "language": "typescript",
+      "explanation": "PreToolUse checks every requested file operation against the fixed workspace. Passing the guard does not approve an unresolved permission request; it leaves the permission flow to continue.",
+      "firstLine": 61,
+      "lastLine": 61,
+      "anchors": [
+        "if (pathAllowed(cwd, input.tool_name, input.tool_input as Record<string, unknown>)) return {};"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step nine. PreToolUse checks every requested file operation against the fixed workspace. Passing the guard does not approve an unresolved permission request; it leaves the permission flow to continue. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 10,
+      "title": "Resolve the unlisted Edit approval",
+      "source": "src/agent.ts",
+      "code": "return allow\n  ? { behavior: \"allow\", updatedInput: input }\n  : { behavior: \"deny\",\n      message: \"Only the controlled status.txt Edit approval is supported.\"\n    };",
+      "language": "typescript",
+      "explanation": "The real canUseTool callback automatically approves only Edit on the private status file in the approval scenario. It records its actual decision before returning. Other requests are denied.",
+      "firstLine": 44,
+      "lastLine": 44,
+      "anchors": [
+        "return allow ? { behavior: \"allow\", updatedInput: input } : { behavior: \"deny\", message: \"Only the controlled status.txt Edit approval is supported.\" };"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step ten. The real canUseTool callback automatically approves only Edit on the private status file in the approval scenario. It records its actual decision before returning. Other requests are denied. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 11,
+      "title": "Preserve the typed SDK outcome",
+      "source": "src/agent.ts",
+      "code": "// Selected result fields.\nstatus: message.subtype === \"success\" && message.is_error\n  ? \"error\" : message.subtype,",
+      "language": "typescript",
+      "explanation": "The host preserves the actual subtype and is_error distinction. A one-turn limit stays error_max_turns, even if some text or a tool request arrived first.",
+      "firstLine": 91,
+      "lastLine": 91,
+      "anchors": [
+        "status: message.subtype === \"success\" && message.is_error ? \"error\" : message.subtype,"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step eleven. The host preserves the actual subtype and is_error distinction. A one-turn limit stays error_max_turns, even if some text or a tool request arrived first. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 12,
+      "title": "Read the actual file after completion",
+      "source": "src/agent.ts",
+      "code": "run.close();\nconst after = await files(config.scenario);\nemit({ type: \"workspace\", stage: \"after\", files: after,\n  changed: before.status !== after.status\n});",
+      "language": "typescript",
+      "explanation": "The finally block closes the query and reads the real status file. The resulting changed flag provides file evidence independently of the model summary, including on interrupted or limited runs.",
+      "firstLine": 100,
+      "lastLine": 101,
+      "anchors": [
+        "run.close(); const after = await files(config.scenario);",
+        "emit({ type: \"workspace\", stage: \"after\", files: after, changed: before.status !== after.status });"
+      ],
+      "sourceSHA256": "e91cc70f4f4ef600c966933772e615152f975c180f98eecb905c9ca357d8c70c",
+      "narration": "Step twelve. The finally block closes the query and reads the real status file. The resulting changed flag provides file evidence independently of the model summary, including on interrupted or limited runs. The source label identifies the corresponding application statements."
+    },
+    {
+      "number": 13,
+      "title": "Render the observed explanation",
+      "source": "src/client.ts",
+      "code": "renderMarkdown(el(\"answer\"), answer);\n// Show actual options, init, decisions and file reads.",
+      "language": "typescript",
+      "explanation": "The browser uses a local Markdown parser and sanitizer to format actual answer text. It keeps configuration, native observations, callback decisions and on-disk evidence separate.",
+      "firstLine": 35,
+      "lastLine": 35,
+      "anchors": [
+        "renderMarkdown(el(\"answer\"), answer);"
+      ],
+      "sourceSHA256": "1a48093f304f4497b465fcc49a016b931c4c94f720fca88e9bcabc3d0c9edaed",
+      "narration": "Step thirteen. The browser uses a local Markdown parser and sanitizer to format actual answer text. It keeps configuration, native observations, callback decisions and on-disk evidence separate. The source label identifies the corresponding application statements."
+    }
+  ]
+}
